@@ -14,7 +14,7 @@ class  Database {
                 $username = "admin";
                 $password = "admin";
 
-                self::$connection = new PDO('mysql:host=localhost;dbname=bookingApp', $username, $password);
+                self::$connection = new PDO('mysql:host=localhost;dbname=newProject', $username, $password);
 
             } catch (PDOException $e) {
                 print "Error!: " . $e->getMessage() . "<br/>";

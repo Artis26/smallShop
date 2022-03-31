@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+{% block head %}
+<body style="background-color:powderblue;">
+<head>
+    <link rel="stylesheet" href="/app/View/style.css">
+    <div class="header">
+        <div class="header-right">
+            <a class="active" href="/products">Home</a>
+            <a class="active" href="/product/create">Create</a>
+        </div>
+    </div>
+
+    {% endblock %}
+</head>
+<body>
+<div id="content">{% block content %} {% endblock %}</div>
+<div id="footer">
+    {% block footer %}
+    &copy; Copyright 2011 by <a href="http://domain.invalid/">YOU</a>.
+    {% endblock %}
+</div>
+</body>
+</html>

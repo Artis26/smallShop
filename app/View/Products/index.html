@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block content %}
+<head>
+    <link rel="stylesheet" href="/app/View/style.css">
+</head>
+{% for product in products %}
+<div style="border-style: solid">
+    Name: {{ product.name }} <br>
+    Price: {{ product.price }} <br>
+    count: {{ product.count }} <br>
+    <button class="smallButton" onclick="location.href='/product/{{ product.id }}'" type="button" > Buy </button>
+</div> <br>
+{% endfor %}
+{% endblock %}

@@ -1,16 +1,33 @@
 <?php
-
-use App\Redirect;
-use Couchbase\View;
-use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
-
 require 'vendor/autoload.php';
 session_start();
 
-$dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
+use App\Controllers\ProductController;
+use App\Redirect;
+use App\Repositories\Products\PdoProductsRepository;
+use App\Repositories\Products\ProductsRepository;
+use App\View;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
+use function DI\create;
 
+$builder = new DI\ContainerBuilder();
+$builder->addDefinitions([
+    ProductsRepository::class => create(PdoProductsRepository::class)
+]);
+$container = $builder->build();
+
+$dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
+    $r->addRoute('GET', '/product/{id:\d+}', [ProductController::class, 'show']);
+    $r->addRoute('GET', '/products', [ProductController::class, 'index']);
+
+    $r->addRoute('GET', '/product/create', [ProductController::class, 'create']);
+    $r->addRoute('POST', '/product/create', [ProductController::class, 'store']);
+
+    $r->addRoute('POST', '/product/buy/{id:\d+}', [ProductController::class, 'buy']);
 });
+
+
 
 // Fetch method and URI from somewhere
 $httpMethod = $_SERVER['REQUEST_METHOD'];
@@ -35,13 +52,11 @@ switch ($routeInfo[0]) {
         break;
     case FastRoute\Dispatcher::FOUND:
 
-        $handler = $routeInfo[1][0];
-        $controller = $handler[0];
+        $controller = $routeInfo[1][0];
         $method = $routeInfo[1][1];
-        $vars = $routeInfo[2];
 
         /** @var View $response */
-        $response = (new $handler)->$method($vars);
+        $response = ($container->get($controller))->$method($routeInfo[2]);
 
         $loader = new FilesystemLoader('app/View');
         $twig = new Environment($loader);
